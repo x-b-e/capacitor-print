@@ -13,21 +13,34 @@ npx cap sync
 
 <docgen-index>
 
-* [`print()`](#print)
+* [`print(...)`](#print)
+* [Interfaces](#interfaces)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-### print()
+### print(...)
 
 ```typescript
-print() => any
+print(printOptions: PrintOptions) => Promise<void>
 ```
 
-**Returns:** <code>any</code>
+| Param              | Type                                                  |
+| ------------------ | ----------------------------------------------------- |
+| **`printOptions`** | <code><a href="#printoptions">PrintOptions</a></code> |
 
 --------------------
+
+
+### Interfaces
+
+
+#### PrintOptions
+
+| Prop          | Type                |
+| ------------- | ------------------- |
+| **`jobName`** | <code>string</code> |
 
 </docgen-api>
