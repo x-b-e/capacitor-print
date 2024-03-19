@@ -1,3 +1,6 @@
+export interface PrintOptions {
+  jobName: string;
+}
 export interface PrintPlugin {
-  print(): Promise<void>;
+    print(printOptions: PrintOptions): Promise<void>;
 }
