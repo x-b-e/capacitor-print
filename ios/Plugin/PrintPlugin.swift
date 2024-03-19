@@ -7,25 +7,34 @@ import Capacitor
  */
 @objc(PrintPlugin)
 public class PrintPlugin: CAPPlugin {
-    private let implementation = Print()
 
     @objc func print(_ call: CAPPluginCall) {
-        let webView = self.webView;
+        guard let webView = self.bridge?.webView else {
+            call.reject("WebView is not available")
+            return
+        }
+
         DispatchQueue.main.async {
-            let webviewPrint = webView?.viewPrintFormatter()
+            let webviewPrint = webView.viewPrintFormatter()
             let printInfo = UIPrintInfo(dictionary: nil)
-            printInfo.jobName = "page"
+
+            // Custom job name from the JavaScript call, with a default value
+            printInfo.jobName = call.getString("jobName") ?? "Document"
             printInfo.outputType = .general
+
             let printController = UIPrintInteractionController.shared
             printController.printInfo = printInfo
-            printController.showsNumberOfCopies = false
             printController.printFormatter = webviewPrint
-            printController.present(animated: true, completionHandler: nil)
-            call.resolve()
+
+            // Basic error handling in the completion handler
+            printController.present(animated: true, completionHandler: { (_, _, error) in
+                if let error = error {
+                    call.reject("Printing failed: \(error.localizedDescription)")
+                } else {
+                    call.resolve()
+                }
+            })
         }
-        
-        
-        
-       
     }
 }
+
