@@ -1,6 +1,6 @@
 {
   "name": "@x-b-e/capacitor-print",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Print the webview",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
