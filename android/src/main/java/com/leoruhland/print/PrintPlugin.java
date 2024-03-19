@@ -18,27 +18,30 @@ public class PrintPlugin extends Plugin {
 
     private Print implementation = new Print();
 
-    @PluginMethod
-    public void print(PluginCall call) {
-        getActivity()
-            .runOnUiThread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        // Get a PrintManager instance
-                        PrintManager printManager = (PrintManager) getActivity().getSystemService(Context.PRINT_SERVICE);
+  @PluginMethod
+  public void print(PluginCall call) {
+    String jobName = call.getString("jobName", "Document");
 
-                        String jobName = "Printed Document";
-
-                        WebView webView = getBridge().getWebView();
-                        // Get a print adapter instance
-                        PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(jobName);
-
-                        // Create a print job with name and adapter instance
-                        PrintJob printJob = printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
-                        call.resolve();
-                    }
-                }
-            );
+    // Check if PrintManager is available
+    PrintManager printManager = (PrintManager) getActivity().getSystemService(Context.PRINT_SERVICE);
+    if (printManager == null) {
+      call.reject("Print Service is not available");
+      return;
     }
+
+    getActivity().runOnUiThread(() -> {
+      try {
+        WebView webView = getBridge().getWebView();
+
+        PrintDocumentAdapter printAdapter = webView.createPrintDocumentAdapter(jobName);
+
+        // Create a print job with name and adapter instance
+        PrintJob printJob = printManager.print(jobName, printAdapter, new PrintAttributes.Builder().build());
+
+        call.resolve();
+      } catch (Exception e) {
+        call.reject("Failed to print", e);
+      }
+    });
+  }
 }
